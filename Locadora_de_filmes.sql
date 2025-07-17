@@ -14,9 +14,9 @@ Descricao VARCHAR(50) NOT NULL
 CREATE TABLE Filme
 (
 Id INT PRIMARY KEY IDENTITY,
+Id_Genero INT NOT NULL,
 Titulo VARCHAR(150) NOT NULL,
 Ano_Lancamento INT NOT NULL,
-Id_Genero INT NOT NULL,
 Duracao_Minutos INT NOT NULL,
 Preco_Locacao DECIMAL(5,2),
 
@@ -61,10 +61,6 @@ CONSTRAINT fk_id_filme FOREIGN KEY (Id_Filme)
    REFERENCES Filme (Id)
 )
 
-insert into Filme_Locado values (1,1)
-
-
-
 -- 1 Inserir 2 Gêneros
 SELECT * FROM Genero;
 
@@ -97,8 +93,7 @@ DELETE FROM Cliente;
 
 -- 4 Registrar locação
 SELECT * FROM Locacao;
-DECLARE @Data_Locacao DATE = GETDATE();
-DECLARE @Data_Devolucao DATE = DATEADD(DAY,5,@Data_Locacao);
+DECLARE @Data_Locacao DATE = GETDATE(), @Data_Devolucao DATE = DATEADD(DAY,5,GETDATE());
 INSERT INTO Locacao
 (
 Id_Cliente, Data_Locacao, Data_Devolucao, Valor_Total 
@@ -162,7 +157,8 @@ FROM Locacao;
 
 -- 12 Exiba o preço médio de locação dos filmes do gênero Comédia
 SELECT * FROM Genero;
-SELECT AVG(F.Preco_Locacao) AS 'Preço médio'
+
+SELECT AVG(F.Preco_Locacao) 'Preço médio'
 FROM Filme F
 WHERE F.Id_Genero = 2;
 
