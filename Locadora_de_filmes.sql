@@ -82,7 +82,7 @@ VALUES('Missão Impossível', 1996, 1, 110, 12.00),
 SELECT * FROM Cliente;
 
 INSERT INTO Cliente(Nome, Email, Data_Nascimento)
-VALUES('Lucas Silva', 'lucas@email.com', '1990-03-15'); 
+VALUES('Lucas Silva', 'lucas@email.com', '1990-03-15');
 
 -- Comandos de Matheus para corrigir erro de current ID do SQL
 SELECT IDENT_CURRENT ('Cliente');
@@ -178,7 +178,7 @@ WHERE L.Data_Devolucao < GETDATE();
 SELECT
 C.Nome, COUNT(*) 'Total de Locações', SUM(L.Valor_Total) 'Valor Total'
 FROM Locacao L
-INNER JOIN Cliente C ON C.Id = L.Id_Cliente
+RIGHT JOIN Cliente C ON C.Id = L.Id_Cliente
 GROUP BY C.Nome;
 
 
