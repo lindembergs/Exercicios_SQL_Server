@@ -1,12 +1,13 @@
 CREATE DATABASE Hotelaria;
 GO
+
 USE Hotelaria;
 GO
-CREATE TABLE Servico_Extra
-(
-Id INT PRIMARY KEY IDENTITY,
-Descricao VARCHAR(100) NOT NULL,
-Valor DECIMAL(7,2)
+
+CREATE TABLE Servico_Extra(
+	Id INT PRIMARY KEY IDENTITY,
+	Descricao VARCHAR(100) NOT NULL,
+	Valor DECIMAL(7,2)
 )
 
 -- Inserir dados na Servico Extra
@@ -18,13 +19,12 @@ VALUES ('Frigobar', 120.00);
 
 SELECT * FROM Servico_Extra;
 
-CREATE TABLE Hospede
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-Nome VARCHAR(100) NOT NULL,
-CPF VARCHAR(14) NOT NULL UNIQUE,
-Email VARCHAR(100) NOT NULL,
-DataNascimento DATE NOT NULL
+CREATE TABLE Hospede(
+	Id INT PRIMARY KEY IDENTITY(1,1),
+	Nome VARCHAR(100) NOT NULL,
+	CPF VARCHAR(14) NOT NULL UNIQUE,
+	Email VARCHAR(100) NOT NULL,
+	DataNascimento DATE NOT NULL
 )
 
 -- Inserir dados no Hospede
@@ -42,10 +42,9 @@ VALUES('Fernanda Souza','11111111113', 'fernanda@gmail.com', '03/08/2000');
 SELECT * FROM Hospede;
 
 
-CREATE TABLE Tipo_Quarto
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-Tipo VARCHAR(50)
+CREATE TABLE Tipo_Quarto(
+	Id INT PRIMARY KEY IDENTITY(1,1),
+	Tipo VARCHAR(50)
 )
 
 -- Inserir dados no tipo quarto
@@ -56,14 +55,12 @@ VALUES('Executivo');
 
 SELECT * FROM Tipo_Quarto;
 
-CREATE TABLE Quarto
-(
-Id INT PRIMARY KEY IDENTITY,
-Id_Tipo INT NOT NULL,
-Numero VARCHAR(10) NOT NULL,
-Preco_Diaria DECIMAL(7,2)
-
-FOREIGN KEY(Id_Tipo) REFERENCES Tipo_Quarto (Id)
+CREATE TABLE Quarto(
+	Id INT PRIMARY KEY IDENTITY,
+	Id_Tipo INT NOT NULL,
+	Numero VARCHAR(10) NOT NULL,
+	Preco_Diaria DECIMAL(7,2)
+	FOREIGN KEY(Id_Tipo) REFERENCES Tipo_Quarto (Id)
 )
 
 -- Inserir dados no Quarto
@@ -78,15 +75,14 @@ VALUES(3, 203, 910.00);
 
 SELECT * FROM Quarto;
 
-CREATE TABLE Reserva
-(
-Id INT PRIMARY KEY IDENTITY,
-Id_Hospede INT NOT NULL,
-Id_Quarto INT NOT NULL,
-Data_Checkin DATE NOT NULL,
-Data_Checkout DATE NOT NULL
-FOREIGN KEY (Id_Hospede) REFERENCES Hospede (Id),
-FOREIGN KEY (Id_Quarto) REFERENCES Quarto (Id),
+CREATE TABLE Reserva(
+	Id INT PRIMARY KEY IDENTITY,
+	Id_Hospede INT NOT NULL,
+	Id_Quarto INT NOT NULL,
+	Data_Checkin DATE NOT NULL,
+	Data_Checkout DATE NOT NULL
+	FOREIGN KEY (Id_Hospede) REFERENCES Hospede (Id),
+	FOREIGN KEY (Id_Quarto) REFERENCES Quarto (Id),
 )
 
 SELECT * FROM Hospede;
@@ -106,14 +102,12 @@ VALUES (4, 1, CONVERT(date, GETDATE()), DATEADD(DAY, 2, GETDATE()));
 
 SELECT * FROM Reserva;
 
-CREATE TABLE Reserva_Servico
-(
-Id_Reserva	INT NOT NULL,
-Id_Servico_Extra INT
-PRIMARY KEY ( Id_Reserva, Id_Servico_Extra )
-
-FOREIGN KEY (Id_Reserva) REFERENCES Reserva (Id),
-FOREIGN KEY (Id_Servico_Extra) REFERENCES Servico_Extra (Id)
+CREATE TABLE Reserva_Servico(
+	Id_Reserva	INT NOT NULL,
+	Id_Servico_Extra INT
+	PRIMARY KEY ( Id_Reserva, Id_Servico_Extra ),
+	FOREIGN KEY (Id_Reserva) REFERENCES Reserva (Id),
+	FOREIGN KEY (Id_Servico_Extra) REFERENCES Servico_Extra (Id)
 )
 
 -- Inserir servico na Reserva
@@ -126,10 +120,9 @@ VALUES(3, 1), (3, 3);
 
 SELECT * FROM Reserva_Servico;
 
-CREATE TABLE Forma_Pagamento
-(
-Id INT PRIMARY KEY IDENTITY,
-Forma VARCHAR(50) NOT NULL
+CREATE TABLE Forma_Pagamento(
+	Id INT PRIMARY KEY IDENTITY,
+	Forma VARCHAR(50) NOT NULL
 )
 
 -- Inserir dador FORMA pagamento
@@ -138,16 +131,14 @@ VALUES('Cartão'),('Pix'),('Dinheiro');
 
 SELECT * FROM Forma_Pagamento;
 
-CREATE TABLE Pagamento
-(
-Id INT PRIMARY KEY IDENTITY,
-Id_Reserva INT,
-Id_Forma_Pagamento INT NOT NULL,
-Data_Pagamento DATE NOT NULL,
-Valor DECIMAL(8,2)
-
-FOREIGN KEY (Id_Reserva) REFERENCES Reserva (Id),
-FOREIGN KEY (Id_Forma_Pagamento) REFERENCES Forma_Pagamento (Id)
+CREATE TABLE Pagamento(
+	Id INT PRIMARY KEY IDENTITY,
+	Id_Reserva INT,
+	Id_Forma_Pagamento INT NOT NULL,
+	Data_Pagamento DATE NOT NULL,
+	Valor DECIMAL(8,2)
+	FOREIGN KEY (Id_Reserva) REFERENCES Reserva (Id),
+	FOREIGN KEY (Id_Forma_Pagamento) REFERENCES Forma_Pagamento (Id)
 )
 
 
@@ -168,7 +159,8 @@ VALUES (1, 3, '25/07/2025', '27/07/2025'); */
 SELECT * FROM Reserva;
 SELECT Nome, COUNT(R.Id) 'Quantidade de reservas'
 FROM Reserva R
-INNER JOIN Hospede H ON R.Id_Hospede = H.Id
+INNER JOIN Hospede H 
+	ON R.Id_Hospede = H.Id
 GROUP BY Nome;
 
 -- 2 Exiba os quartos que já foram reservados por mais de um hóspede diferente.
@@ -178,8 +170,10 @@ SELECT * FROM Quarto;
 
 SELECT Q.Numero 'Numero do quarto', COUNT(H.Id) 'Quantidade de reservas'
 FROM Reserva R
-INNER JOIN Quarto Q ON R.Id_Quarto = Q.Id
-INNER JOIN Hospede H ON R.Id_Hospede = H.Id
+INNER JOIN Quarto Q 
+	ON R.Id_Quarto = Q.Id
+INNER JOIN Hospede H 
+	ON R.Id_Hospede = H.Id
 GROUP BY Q.Numero
 HAVING COUNT(H.Id) > 1;
 
@@ -187,7 +181,8 @@ HAVING COUNT(H.Id) > 1;
 
 SELECT R.Id, R.Id_Hospede, R.Id_Quarto, R.Data_Checkin, R.Data_Checkout
 FROM Reserva R
-LEFT JOIN Pagamento P ON R.Id = P.Id_Reserva
+LEFT JOIN Pagamento P 
+	ON R.Id = P.Id_Reserva
 WHERE P.Id IS NULL;
 
 -- 4 Exiba o total pago por cada reserva, somando o valor do pagamento e dos serviços extras utilizados.
@@ -195,9 +190,9 @@ WHERE P.Id IS NULL;
 SELECT R.Id 'Id da reserva', SUM(S.Valor + Q.Preco_Diaria) 'Soma valor + Preco diária'
 FROM Reserva R
 INNER JOIN Servico_Extra S
-ON R.Id = S.Id
+	ON R.Id = S.Id
 INNER JOIN Quarto Q 
-ON R.Id_Quarto = Q.Id
+	ON R.Id_Quarto = Q.Id
 GROUP BY R.Id;
 
 -- 5 Atualize a forma de pagamento da reserva do hóspede "Fernanda Souza" para "Pix", considerando a reserva mais recente.
@@ -213,8 +208,10 @@ SELECT * FROM Pagamento;
 -- 6 Liste o nome dos hóspedes que já utilizaram três ou mais tipos diferentes de serviços extras.
 SELECT H.Nome, COUNT(RS.Id_Servico_Extra) 'Numero de servicos'
 FROM Hospede H
-INNER JOIN Reserva R ON H.Id = R.Id_Hospede
-INNER JOIN Reserva_Servico RS ON R.Id = RS.Id_Reserva
+INNER JOIN Reserva R 
+	ON H.Id = R.Id_Hospede
+INNER JOIN Reserva_Servico RS 
+	ON R.Id = RS.Id_Reserva
 GROUP BY H.Nome
 HAVING COUNT(RS.Id_Servico_Extra) >= 3;
 
@@ -229,9 +226,12 @@ SELECT * FROM Reserva;
 
 SELECT Q.Numero 'Numero do quarto', SE.Descricao  'Servico utilizado'
 FROM Reserva R
-INNER JOIN Quarto Q ON R.Id_Quarto = Q.Id
-INNER JOIN Reserva_Servico RS ON R.Id = RS.Id_Reserva
-INNER JOIN Servico_Extra SE ON RS.Id_Servico_Extra = SE.Id
+INNER JOIN Quarto Q 
+	ON R.Id_Quarto = Q.Id
+INNER JOIN Reserva_Servico RS 
+	ON R.Id = RS.Id_Reserva
+INNER JOIN Servico_Extra SE 
+	ON RS.Id_Servico_Extra = SE.Id
 WHERE Q.Numero = '202';
 
 -- 9 Mostre os hóspedes que usaram o serviço "Massagem Relaxante" ao menos uma vez.
@@ -239,9 +239,9 @@ WHERE Q.Numero = '202';
 SELECT H.Nome, SE.Descricao
 FROM Reserva R
 INNER JOIN Hospede H
-ON R.Id_Hospede = H.Id
+	ON R.Id_Hospede = H.Id
 INNER JOIN Servico_Extra SE
-ON R.Id = SE.Id
+	ON R.Id = SE.Id
 WHERE SE.Id = 2
 
 -- 10 Altere o tipo de todos os quartos com diária superior a R$ 800,00 para "Executivo".
@@ -254,18 +254,18 @@ WHERE Quarto.Preco_Diaria > 800
 SELECT Q.Numero, TQ.Tipo, H.Nome, R.Data_Checkin
 FROM Reserva R
 INNER JOIN Quarto Q	
-ON R.Id_Quarto = Q.Id
+	ON R.Id_Quarto = Q.Id
 INNER JOIN Hospede H
-ON R.Id_Hospede = H.Id
+	ON R.Id_Hospede = H.Id
 INNER JOIN Tipo_Quarto TQ
-ON Q.Id_Tipo = TQ.Id
+	ON Q.Id_Tipo = TQ.Id
 
 -- 12 Exiba os 5 hóspedes mais recentes (com base na data da última reserva).
 
 SELECT TOP 5 Nome 
 FROM Hospede H
 INNER JOIN Reserva R
-ON R.Id_Hospede = H.Id
+	ON R.Id_Hospede = H.Id
 ORDER BY R.Data_Checkin DESC
 
 -- 13 Mostre todos os pagamentos realizados, exibindo: nome do hóspede, número do quarto, valor do pagamento e forma de pagamento..
@@ -273,21 +273,21 @@ ORDER BY R.Data_Checkin DESC
 SELECT H.Nome, Q.Numero 'Numero do quarto', P.Valor, FP.Forma
 FROM Reserva R
 INNER JOIN Hospede H
-ON R.Id_Hospede = H.Id
+	ON R.Id_Hospede = H.Id
 INNER JOIN Quarto Q
-ON R.Id_Quarto = Q.Id
+	ON R.Id_Quarto = Q.Id
 INNER JOIN Pagamento P
-ON R.Id = P.Id_Reserva
+	ON R.Id = P.Id_Reserva
 INNER JOIN Forma_Pagamento FP
-ON P.Id = FP.Id
+	ON P.Id = FP.Id
 
 -- 14 Exiba a média de dias de estadia por tipo de quarto.
 SELECT AVG(DATEDIFF(DAY, R.Data_Checkin, R.Data_Checkout)) 'Média de dias de Estadia'
 FROM Reserva R
 INNER JOIN Quarto Q
-ON R.Id_Quarto = Q.Id
+	ON R.Id_Quarto = Q.Id
 INNER JOIN Tipo_Quarto TQ
-ON Q.Id_Tipo = TQ.Id
+	ON Q.Id_Tipo = TQ.Id
 
 -- 15 Liste os hóspedes que possuem e-mail com domínio "@gmail.com" e que já realizaram ao menos uma reserva.
 SELECT * 

@@ -4,46 +4,36 @@ GO
 USE Controle_De_Vendas;
 GO
 
-CREATE TABLE Cliente
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-Nome VARCHAR(100) NOT NULL,
-Email VARCHAR(100) UNIQUE NULL,
-Data_Cadastro DATE DEFAULT GETDATE()
+CREATE TABLE Cliente(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Nome VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NULL,
+    Data_Cadastro DATE DEFAULT GETDATE()
 )
 
-CREATE TABLE Produto
-(
-Id INT PRIMARY KEY IDENTITY,
-Nome VARCHAR(100) NOT NULL,
-Preco DECIMAL(10,2) CHECK(Preco > 0),
-Estoque INT NOT NULL DEFAULT 0
+CREATE TABLE Produto(
+    Id INT PRIMARY KEY IDENTITY,
+    Nome VARCHAR(100) NOT NULL,
+    Preco DECIMAL(10,2) CHECK(Preco > 0),
+    Estoque INT NOT NULL DEFAULT 0
 )
 
-CREATE TABLE Venda
-(
-Id INT PRIMARY KEY IDENTITY,
-Id_Cliente INT NOT NULL,
-Data_Venda DATE DEFAULT GETDATE(),
-Valor_Total DECIMAL(10,2) NULL
-
-CONSTRAINT FK_Id_Cliente FOREIGN KEY (Id_Cliente)
-REFERENCES Cliente (Id)
+CREATE TABLE Venda(
+    Id INT PRIMARY KEY IDENTITY,
+    Id_Cliente INT NOT NULL,
+    Data_Venda DATE DEFAULT GETDATE(),
+    Valor_Total DECIMAL(10,2) NULL
+    FOREIGN KEY (Id_Cliente) REFERENCES Cliente (Id)
 )
 
-CREATE TABLE Itens_Venda
-(
-Id INT PRIMARY KEY IDENTITY,
-Id_Venda INT NOT NULL,
-Id_Produto INT NOT NULL,
-Quantidade INT CHECK (Quantidade > 0),
-Preco_Unitario DECIMAL(10,2) NOT NULL
-
-CONSTRAINT FK_Id_Venda FOREIGN KEY (Id_Venda)
-REFERENCES Venda (Id),
-
-CONSTRAINT FK_Id_Produto FOREIGN KEY (Id_Produto)
-REFERENCES Produto (Id)
+CREATE TABLE Itens_Venda(
+    Id INT PRIMARY KEY IDENTITY,
+    Id_Venda INT NOT NULL,
+    Id_Produto INT NOT NULL,
+    Quantidade INT CHECK (Quantidade > 0),
+    Preco_Unitario DECIMAL(10,2) NOT NULL
+    FOREIGN KEY (Id_Venda) REFERENCES Venda (Id),
+    FOREIGN KEY (Id_Produto) REFERENCES Produto (Id)
 )
 
 -- 5 Inserir dados na tabela Cliente
@@ -86,16 +76,16 @@ WHERE Estoque < 10;
 SELECT V.Id, C.Nome, V.Data_Venda, V.Valor_Total
 FROM Venda V
 INNER JOIN Cliente C
-ON V.Id_Cliente = C.Id
+    ON V.Id_Cliente = C.Id
 ORDER BY V.Id DESC;
 
 --  11. Liste os itens vendidos da venda com Id = 1, mostrando: nome do produto, quantidade e preco unitario.
 SELECT P.Nome, IV.Quantidade, IV.Preco_Unitario
 FROM Venda V
 INNER JOIN Itens_Venda IV
-ON V.Id = IV.Id_Venda
+    ON V.Id = IV.Id_Venda
 INNER JOIN Produto P
-ON IV.Id_Produto = P.Id
+    ON IV.Id_Produto = P.Id
 WHERE V.Id = 1;
 
 --  12. Liste os nomes dos clientes que ainda nao realizaram nenhuma venda.
@@ -111,7 +101,7 @@ SELECT *
 SELECT C.Nome, COUNT(V.Id) 'Contagem de Vendas', SUM(V.Valor_Total) 'Valor Total'
 FROM Venda V
 INNER JOIN Cliente C
-ON V.Id_Cliente = C.Id
+    ON V.Id_Cliente = C.Id
 GROUP BY C.Nome;
 
 -- 14. Altere a tabela Clientes e adicione uma nova coluna chamada Status com:- Tipo: VARCHAR(10)
@@ -129,9 +119,9 @@ ADD [Status] VARCHAR(10) DEFAULT 'Ativo'
 
 SELECT P.Nome, SUM(IV.Quantidade) 'Quantidade', SUM(IV.Quantidade * IV.Preco_Unitario) 'Soma'
 FROM Produto P
-    INNER JOIN Itens_Venda IV
+INNER JOIN Itens_Venda IV
     ON P.Id = IV.Id_Produto
-    GROUP BY P.Nome;
+GROUP BY P.Nome;
 
 
 

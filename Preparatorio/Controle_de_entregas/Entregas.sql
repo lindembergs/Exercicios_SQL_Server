@@ -5,10 +5,9 @@ USE SistemaEntrega;
 GO
 
 -- 1 ok
-CREATE TABLE Telefone
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-Numero CHAR(11) NOT NULL
+CREATE TABLE Telefone(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Numero CHAR(11) NOT NULL
 );
 
 INSERT INTO Telefone(Numero)
@@ -17,71 +16,63 @@ VALUES('83993088753'),
 ('83993088755');
 
 -- 2 ok
-CREATE TABLE StatusPedido
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-[Status] VARCHAR(45) NOT NULL
+CREATE TABLE StatusPedido(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    [Status] VARCHAR(45) NOT NULL
 );
 
 INSERT INTO StatusPedido([Status])
 VALUES('Aguardando Retirada'),('Em Rota'),('Entregue');
 
 --3 ok
-CREATE TABLE StatusPagamento
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-[Status] BIT NOT NULL
+CREATE TABLE StatusPagamento(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    [Status] BIT NOT NULL
 );
 
 INSERT INTO StatusPagamento([Status])
 VALUES(1);
 
 -- 4 ok
-CREATE TABLE Cidade
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-Nome VARCHAR(100) NOT NULL
+CREATE TABLE Cidade(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Nome VARCHAR(100) NOT NULL
 )
 
 INSERT INTO Cidade(Nome)
 VALUES('Ingá');
 
 -- 5 ok
-CREATE TABLE Endereco
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-IdCidade INT NOT NULL,
-Rua VARCHAR(45) NOT NULL,
-CEP CHAR(8) NOT NULL,
-Bairro VARCHAR(45) NOT NULL,
-Numero VARCHAR(8) NOT NULL
-
-FOREIGN KEY (IdCidade) REFERENCES Cidade(Id),
+CREATE TABLE Endereco(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    IdCidade INT NOT NULL,
+    Rua VARCHAR(45) NOT NULL,
+    CEP CHAR(8) NOT NULL,
+    Bairro VARCHAR(45) NOT NULL,
+    Numero VARCHAR(8) NOT NULL
+    FOREIGN KEY (IdCidade) REFERENCES Cidade(Id),
 );
 
 INSERT INTO Endereco(IdCidade,CEP,Rua,Bairro,Numero)
 VALUES(1, '88888888', 'Rua nova do cruzeiro', 'Emboca', 61);
 
 -- 6 ok
-CREATE TABLE FormaPagamento
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-Forma VARCHAR(10) NOT NULL
+CREATE TABLE FormaPagamento(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Forma VARCHAR(10) NOT NULL
 )
 
 INSERT INTO FormaPagamento(Forma)
 VALUES('Pix'),('Dinheiro'),('Cartão');
 
 -- 7 ok
-CREATE TABLE Pagamento
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-IdStatusPagamento INT NOT NULL,
-IdFormaPagamento INT NOT NULL,
-Valor DECIMAL(10,2) NOT NULL
-
-FOREIGN KEY (IdStatusPagamento) REFERENCES StatusPagamento (Id),
-FOREIGN KEY (IdFormaPagamento) REFERENCES FormaPagamento(Id)
+CREATE TABLE Pagamento(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    IdStatusPagamento INT NOT NULL,
+    IdFormaPagamento INT NOT NULL,
+    Valor DECIMAL(10,2) NOT NULL
+    FOREIGN KEY (IdStatusPagamento) REFERENCES StatusPagamento (Id),
+    FOREIGN KEY (IdFormaPagamento) REFERENCES FormaPagamento(Id)
 );
 
 INSERT INTO Pagamento(IdFormaPagamento,IdStatusPagamento,Valor)
@@ -90,30 +81,26 @@ VALUES(1, 1, 253),
 (3, 1, 480000.00);
 
 -- 8 ok
-CREATE TABLE Restaurante
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-IdEndereco INT NOT NULL,
-IdTelefone INT NOT NULL,
-Nome VARCHAR(45) NOT NULL
-
-FOREIGN KEY(IdEndereco) REFERENCES Endereco(Id),
-FOREIGN KEY(IdTelefone) REFERENCES Telefone(Id)
+CREATE TABLE Restaurante(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    IdEndereco INT NOT NULL,
+    IdTelefone INT NOT NULL,
+    Nome VARCHAR(45) NOT NULL
+    FOREIGN KEY(IdEndereco) REFERENCES Endereco(Id),
+    FOREIGN KEY(IdTelefone) REFERENCES Telefone(Id)
 );
 
 INSERT INTO Restaurante(IdEndereco,IdTelefone,Nome)
 VALUES(1, 2, 'Subway');
 
 -- 9 ok
-CREATE TABLE Entregador
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-IdTelefone INT NOT NULL,
-Nome VARCHAR(45) NOT NULL,
-PlacaMoto VARCHAR(7) NOT NULL
-
-CONSTRAINT fk_telefone FOREIGN KEY (IdTelefone)
-REFERENCES Telefone (Id)
+CREATE TABLE Entregador(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    IdTelefone INT NOT NULL,
+    Nome VARCHAR(45) NOT NULL,
+    PlacaMoto VARCHAR(7) NOT NULL
+    CONSTRAINT fk_telefone FOREIGN KEY (IdTelefone)
+    REFERENCES Telefone (Id)
 );
 
 INSERT INTO Entregador(Nome,IdTelefone,PlacaMoto)
@@ -121,15 +108,13 @@ VALUES('Lindemberg', 1, 'EXE2102'),
 ('Lindemberg2', 3, 'EXE2103');
 
 -- 10 ok 
-CREATE TABLE Cliente
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-IdEndereco INT NOT NULL,
-IdTelefone INT NOT NULL,
-Nome VARCHAR(45) NOT NULL
-
-FOREIGN KEY(IdEndereco) REFERENCES Endereco(Id),
-FOREIGN KEY(IdTelefone) REFERENCES Telefone(Id)
+CREATE TABLE Cliente(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    IdEndereco INT NOT NULL,
+    IdTelefone INT NOT NULL,
+    Nome VARCHAR(45) NOT NULL
+    FOREIGN KEY(IdEndereco) REFERENCES Endereco(Id),
+    FOREIGN KEY(IdTelefone) REFERENCES Telefone(Id)
 );
 
 INSERT INTO Cliente(Nome,IdEndereco,IdTelefone)
@@ -137,21 +122,19 @@ VALUES ('Larry', 1, 2),
 ('bERG', 1, 2);
 
 -- 11 
-CREATE TABLE Pedido 
-(
-Id INT PRIMARY KEY IDENTITY(1,1),
-IdPagamento INT NULL,
-IdStatusPedido INT NOT NULL,
-IdRestaurante INT NOT NULL,
-IdEntregador INT NOT NULL,
-IdCliente INT NOT NULL,
-Descricao VARCHAR(100) NOT NULL,
-DataHoraPedido DATETIME DEFAULT GETDATE()
-
-FOREIGN KEY (IdPagamento) REFERENCES Pagamento(Id),
-FOREIGN KEY (IdStatusPedido) REFERENCES StatusPedido(Id),
-FOREIGN KEY (IdRestaurante) REFERENCES Restaurante(Id),
-FOREIGN KEY (IdEntregador) REFERENCES Entregador(Id),
+CREATE TABLE Pedido(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    IdPagamento INT NULL,
+    IdStatusPedido INT NOT NULL,
+    IdRestaurante INT NOT NULL,
+    IdEntregador INT NOT NULL,
+    IdCliente INT NOT NULL,
+    Descricao VARCHAR(100) NOT NULL,
+    DataHoraPedido DATETIME DEFAULT GETDATE()
+    FOREIGN KEY (IdPagamento) REFERENCES Pagamento(Id),
+    FOREIGN KEY (IdStatusPedido) REFERENCES StatusPedido(Id),
+    FOREIGN KEY (IdRestaurante) REFERENCES Restaurante(Id),
+    FOREIGN KEY (IdEntregador) REFERENCES Entregador(Id),
 );
 
 INSERT INTO Pedido(IdPagamento,IdStatusPedido,IdRestaurante,IdEntregador,IdCliente,Descricao, DataHoraPedido)
@@ -175,7 +158,7 @@ SELECT
     E.Nome, E.PlacaMoto, COUNT(P.IdEntregador) 'Contagem de Pedidos'
 FROM Entregador E
 INNER JOIN Pedido P 
-ON E.Id = P.IdEntregador
+    ON E.Id = P.IdEntregador
 WHERE P.DataHoraPedido >= DATEADD(MONTH, -1, GETDATE())
 GROUP BY E.Nome, E.PlacaMoto
 HAVING 
@@ -185,9 +168,9 @@ HAVING
 SELECT C.Nome, PAG.Valor
 FROM Cliente C
 INNER JOIN Pedido P
-ON C.Id = P.IdCliente
+    ON C.Id = P.IdCliente
 INNER JOIN Pagamento PAG
-ON P.IdPagamento = PAG.Id
+    ON P.IdPagamento = PAG.Id
 WHERE P.IdStatusPedido = 1;
 
 -- 4 Liste os motoboys que não possuem nenhuma entrega atribuída.
@@ -195,7 +178,7 @@ WHERE P.IdStatusPedido = 1;
 SELECT E.Nome
 FROM Entregador E
 LEFT JOIN Pedido P
-ON E.Id = P.IdEntregador
+    ON E.Id = P.IdEntregador
 WHERE P.IdEntregador IS NULL
 
 -- 5 Encontre o pedido de maior valor e exiba a descrição, nome do cliente e nome do motoboy responsável.
@@ -205,11 +188,11 @@ SELECT TOP 1
   C.Nome 'NomeCliente', E.Nome 'NomeMotoboy', PAG.Valor 'Total'
 FROM Pedido P
 INNER JOIN Cliente C 
-ON C.Id = P.IdCliente
+    ON C.Id = P.IdCliente
 INNER JOIN Entregador E 
-ON E.Id = P.IdEntregador
+    ON E.Id = P.IdEntregador
 INNER JOIN Pagamento PAG 
-ON PAG.Id = P.IdPagamento
+    ON PAG.Id = P.IdPagamento
 ORDER BY PAG.Valor DESC;
 
 -- 6 Mostre todos os pedidos cujo pagamento foi feito na entrega e ainda não foram entregues.
@@ -217,7 +200,7 @@ ORDER BY PAG.Valor DESC;
 SELECT *
 FROM Pedido P
 LEFT JOIN Pagamento PAG
-ON P.IdPagamento = PAG.Id
+    ON P.IdPagamento = PAG.Id
 WHERE P.IdStatusPedido = 2 AND P.IdPagamento IS NULL;
 
 -- 7 Atualize o status para "Entregue" de todos os pedidos que estão com status "Em Rota" há mais de 2 dias.
@@ -249,7 +232,7 @@ WHERE IdCliente IS NULL;
 SELECT E.Nome, COUNT(P.IdEntregador) Quantidade_Pedidos
 FROM Entregador E
 LEFT JOIN Pedido P
-ON E.Id = P.IdEntregador
+    ON E.Id = P.IdEntregador
 GROUP BY E.Nome;
 
 -- 12 Mostre todos os clientes e o valor total gasto em pedidos.
@@ -257,18 +240,18 @@ GROUP BY E.Nome;
 SELECT C.Nome, SUM(PAG.Valor) Soma
 FROM Cliente C
 LEFT JOIN Pedido P
-ON C.Id = P.IdCliente
+    ON C.Id = P.IdCliente
 LEFT JOIN Pagamento PAG
-ON P.IdPagamento = PAG.Id
+    ON P.IdPagamento = PAG.Id
 GROUP BY C.Nome;
 
 -- 13 Exiba o nome do motoboy e o maior valor de pedido que ele já entregou.
 SELECT E.Nome, MAX(PAG.Valor) 'Pedido mais alto entregue'
 FROM Entregador E
 INNER JOIN Pedido P
-ON E.Id = P.IdEntregador
+    ON E.Id = P.IdEntregador
 INNER JOIN Pagamento PAG 
-ON P.IdPagamento = PAG.Id
+    ON P.IdPagamento = PAG.Id
 GROUP BY E.Nome
 
 
@@ -277,7 +260,7 @@ GROUP BY E.Nome
 SELECT *
 FROM Cliente C
 INNER JOIN Pedido P
-ON C.Id = P.IdCliente
+    ON C.Id = P.IdCliente
 
 -- 15 Mostre todos os pedidos e, ao lado, o nome do cliente e o nome do motoboy responsável.
 -- (Obrigatório uso de dois LEFT JOIN)
@@ -285,23 +268,25 @@ ON C.Id = P.IdCliente
 SELECT C.Nome, E.Nome
 FROM Cliente C
 LEFT JOIN Pedido P
-ON C.Id = P.IdCliente
+    ON C.Id = P.IdCliente
 LEFT JOIN Entregador E
-ON P.IdEntregador = E.Id
+    ON P.IdEntregador = E.Id
 
 -- 16 Liste todos os motoboys e a data do último pedido entregue por cada um.
 SELECT E.Nome, FORMAT(P.DataHoraPedido, 'dd/MM/yyyy')
 FROM Entregador E
 INNER JOIN Pedido P
-ON E.Id = P.IdEntregador
+    ON E.Id = P.IdEntregador
 
 -- 17 Exiba todos os clientes que já tiveram pedidos com pagamento na entrega, mostrando também o valor médio desses pedidos.
 SELECT 
     C.Nome NomeCliente,
     AVG(PAG.Valor) ValorMedio
 FROM Cliente C
-INNER JOIN Pedido P ON C.Id = P.IdCliente
-INNER JOIN Pagamento PAG ON P.IdPagamento = PAG.Id
+INNER JOIN Pedido P 
+    ON C.Id = P.IdCliente
+INNER JOIN Pagamento PAG 
+    ON P.IdPagamento = PAG.Id
 WHERE PAG.IdFormaPagamento = 2
 GROUP BY C.Nome;
 
@@ -309,9 +294,9 @@ GROUP BY C.Nome;
 SELECT E.Nome, SUM(PAG.Valor) Total
 FROM Entregador E
 INNER JOIN Pedido P
-ON E.Id = P.IdEntregador
+    ON E.Id = P.IdEntregador
 INNER JOIN Pagamento PAG
-ON P.IdPagamento = PAG.Id
+    ON P.IdPagamento = PAG.Id
 WHERE P.IdStatusPedido = 2
 GROUP BY E.Nome;
 
@@ -321,7 +306,7 @@ SELECT * FROM StatusPedido
 SELECT E.Nome, P.DataHoraPedido 
 FROM Entregador E
 INNER JOIN Pedido P
-ON E.Id = P.IdEntregador
+    ON E.Id = P.IdEntregador
 WHERE P.DataHoraPedido >= DATEADD(DAY, -30, GETDATE())
 
 -- 20 Mostre todos os pedidos, o nome do cliente e o nome do motoboy, incluindo pedidos sem motoboy atribuído.
@@ -329,6 +314,6 @@ WHERE P.DataHoraPedido >= DATEADD(DAY, -30, GETDATE())
 SELECT C.Nome, E.Nome
 FROM Cliente C
 LEFT JOIN Pedido P
-ON C.Id = P.IdCliente
+    ON C.Id = P.IdCliente
 LEFT JOIN Entregador E
-ON P.IdEntregador = E.Id;
+    ON P.IdEntregador = E.Id;

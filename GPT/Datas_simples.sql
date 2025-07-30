@@ -42,7 +42,7 @@ SELECT * FROM CLIENTE;
 -- 3 Liste os clientes que fazem aniversário no segundo semestre do ano.
 SELECT * 
 FROM Cliente
-WHERE MONTH( Data_Nascimento) > 6;
+WHERE MONTH(Data_Nascimento) > 6;
 
 -- Exiba todas as vendas realizadas no mês atual.
 SELECT *
