@@ -258,9 +258,12 @@ GROUP BY E.Nome
 -- 14 Liste todos os clientes que nunca receberam pedidos do motoboy "bERG".
 
 SELECT *
-FROM Cliente C
-INNER JOIN Pedido P
-    ON C.Id = P.IdCliente
+    FROM Cliente C
+    INNER JOIN Pedido P
+        ON C.Id = P.IdCliente
+    INNER JOIN Entregador E
+        ON P.IdEntregador = E.Id
+    WHERE E.Id != 1;
 
 -- 15 Mostre todos os pedidos e, ao lado, o nome do cliente e o nome do motoboy responsável.
 -- (Obrigatório uso de dois LEFT JOIN)
