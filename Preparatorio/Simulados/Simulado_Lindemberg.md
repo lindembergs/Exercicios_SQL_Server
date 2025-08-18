@@ -154,8 +154,8 @@ e) Pode ser composta por múltiplas colunas
 
 **17)** O que garante a integridade referencial em um banco de dados?
    
-**a)** Chaves primárias  
-b) Chaves estrangeiras  
+a) Chaves primárias  
+**b)** Chaves estrangeiras  
 c) Índices  
 d) Views  
 e) Triggers  
