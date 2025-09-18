@@ -40,7 +40,7 @@ CREATE TABLE Cidade(
 )
 
 INSERT INTO Cidade(Nome)
-VALUES('Ingá');
+VALUES('Ingï¿½');
 
 -- 5 ok
 CREATE TABLE Endereco(
@@ -63,7 +63,7 @@ CREATE TABLE FormaPagamento(
 )
 
 INSERT INTO FormaPagamento(Forma)
-VALUES('Pix'),('Dinheiro'),('Cartão');
+VALUES('Pix'),('Dinheiro'),('Cartï¿½o');
 
 -- 7 ok
 CREATE TABLE Pagamento(
@@ -153,7 +153,7 @@ FROM Pedido
 WHERE IdStatusPedido = 2;
 
 
--- 2 Exiba o nome do motoboy e a placa da moto de todos que realizaram mais de 5 entregas no último mês.
+-- 2 Exiba o nome do motoboy e a placa da moto de todos que realizaram mais de 5 entregas no ï¿½ltimo mï¿½s.
 SELECT 
     E.Nome, E.PlacaMoto, COUNT(P.IdEntregador) 'Contagem de Pedidos'
 FROM Entregador E
@@ -173,7 +173,7 @@ INNER JOIN Pagamento PAG
     ON P.IdPagamento = PAG.Id
 WHERE P.IdStatusPedido = 1;
 
--- 4 Liste os motoboys que não possuem nenhuma entrega atribuída.
+-- 4 Liste os motoboys que nï¿½o possuem nenhuma entrega atribuï¿½da.
 
 SELECT E.Nome
 FROM Entregador E
@@ -181,7 +181,7 @@ LEFT JOIN Pedido P
     ON E.Id = P.IdEntregador
 WHERE P.IdEntregador IS NULL
 
--- 5 Encontre o pedido de maior valor e exiba a descrição, nome do cliente e nome do motoboy responsável.
+-- 5 Encontre o pedido de maior valor e exiba a descriï¿½ï¿½o, nome do cliente e nome do motoboy responsï¿½vel.
 
 SELECT TOP 1 
   P.Descricao, 
@@ -195,7 +195,7 @@ INNER JOIN Pagamento PAG
     ON PAG.Id = P.IdPagamento
 ORDER BY PAG.Valor DESC;
 
--- 6 Mostre todos os pedidos cujo pagamento foi feito na entrega e ainda não foram entregues.
+-- 6 Mostre todos os pedidos cujo pagamento foi feito na entrega e ainda nï¿½o foram entregues.
 
 SELECT *
 FROM Pedido P
@@ -203,7 +203,7 @@ LEFT JOIN Pagamento PAG
     ON P.IdPagamento = PAG.Id
 WHERE P.IdStatusPedido = 2 AND P.IdPagamento IS NULL;
 
--- 7 Atualize o status para "Entregue" de todos os pedidos que estão com status "Em Rota" há mais de 2 dias.
+-- 7 Atualize o status para "Entregue" de todos os pedidos que estï¿½o com status "Em Rota" hï¿½ mais de 2 dias.
 UPDATE Pedido
 SET IdStatusPedido = 3
 WHERE IdStatusPedido = 2 AND DataHoraPedido <= DATEADD(DAY, - 3, GETDATE())
@@ -213,7 +213,7 @@ UPDATE Pagamento
 SET Valor = Valor * 1.1
 WHERE Valor < 20;
 
--- 9 Altere o motoboy responsável pelo pedido de ID 2 para o motoboy ID 2.
+-- 9 Altere o motoboy responsï¿½vel pelo pedido de ID 2 para o motoboy ID 2.
 
 UPDATE Pedido
 SET IdEntregador = 2
@@ -221,7 +221,7 @@ WHERE Pedido.Id = 2
 
 SELECT * FROM Pedido;
 
--- 10 Remova todos os registros de pedidos que não possuem cliente vinculado.
+-- 10 Remova todos os registros de pedidos que nï¿½o possuem cliente vinculado.
 
 DELETE 
 FROM Pedido
@@ -236,7 +236,7 @@ LEFT JOIN Pedido P
 GROUP BY E.Nome;
 
 -- 12 Mostre todos os clientes e o valor total gasto em pedidos.
---(Inclua clientes que ainda não fizeram pedidos)
+--(Inclua clientes que ainda nï¿½o fizeram pedidos)
 SELECT C.Nome, SUM(PAG.Valor) Soma
 FROM Cliente C
 LEFT JOIN Pedido P
@@ -245,7 +245,7 @@ LEFT JOIN Pagamento PAG
     ON P.IdPagamento = PAG.Id
 GROUP BY C.Nome;
 
--- 13 Exiba o nome do motoboy e o maior valor de pedido que ele já entregou.
+-- 13 Exiba o nome do motoboy e o maior valor de pedido que ele jï¿½ entregou.
 SELECT E.Nome, MAX(PAG.Valor) 'Pedido mais alto entregue'
 FROM Entregador E
 INNER JOIN Pedido P
@@ -265,8 +265,8 @@ SELECT *
         ON P.IdEntregador = E.Id
     WHERE E.Id != 1;
 
--- 15 Mostre todos os pedidos e, ao lado, o nome do cliente e o nome do motoboy responsável.
--- (Obrigatório uso de dois LEFT JOIN)
+-- 15 Mostre todos os pedidos e, ao lado, o nome do cliente e o nome do motoboy responsï¿½vel.
+-- (Obrigatï¿½rio uso de dois LEFT JOIN)
 
 SELECT C.Nome, E.Nome
 FROM Cliente C
@@ -275,13 +275,13 @@ LEFT JOIN Pedido P
 LEFT JOIN Entregador E
     ON P.IdEntregador = E.Id
 
--- 16 Liste todos os motoboys e a data do último pedido entregue por cada um.
+-- 16 Liste todos os motoboys e a data do ï¿½ltimo pedido entregue por cada um.
 SELECT E.Nome, FORMAT(P.DataHoraPedido, 'dd/MM/yyyy')
 FROM Entregador E
 INNER JOIN Pedido P
     ON E.Id = P.IdEntregador
 
--- 17 Exiba todos os clientes que já tiveram pedidos com pagamento na entrega, mostrando também o valor médio desses pedidos.
+-- 17 Exiba todos os clientes que jï¿½ tiveram pedidos com pagamento na entrega, mostrando tambï¿½m o valor mï¿½dio desses pedidos.
 SELECT 
     C.Nome NomeCliente,
     AVG(PAG.Valor) ValorMedio
@@ -293,7 +293,7 @@ INNER JOIN Pagamento PAG
 WHERE PAG.IdFormaPagamento = 2
 GROUP BY C.Nome;
 
--- 18 Liste todos os motoboys e o total de pedidos que ainda estão "Em Rota".
+-- 18 Liste todos os motoboys e o total de pedidos que ainda estï¿½o "Em Rota".
 SELECT E.Nome, SUM(PAG.Valor) Total
 FROM Entregador E
 INNER JOIN Pedido P
@@ -305,14 +305,14 @@ GROUP BY E.Nome;
 
 SELECT * FROM StatusPedido
 
--- 19 Exiba o nome dos motoboys que não realizaram nenhum pedido no último mês.
+-- 19 Exiba o nome dos motoboys que nï¿½o realizaram nenhum pedido no ï¿½ltimo mï¿½s.
 SELECT E.Nome, P.DataHoraPedido 
 FROM Entregador E
 INNER JOIN Pedido P
     ON E.Id = P.IdEntregador
 WHERE P.DataHoraPedido >= DATEADD(DAY, -30, GETDATE())
 
--- 20 Mostre todos os pedidos, o nome do cliente e o nome do motoboy, incluindo pedidos sem motoboy atribuído.
+-- 20 Mostre todos os pedidos, o nome do cliente e o nome do motoboy, incluindo pedidos sem motoboy atribuï¿½do.
 
 SELECT C.Nome, E.Nome
 FROM Cliente C
